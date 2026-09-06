@@ -5,7 +5,7 @@ import com.danidev.apprickmorty.data.model.RickCharacter
 
 interface RickAndMortyApi {
     @GET("character")
-    suspend fun getCgaracters(
+    suspend fun getCharacters(
         @Query("name") name : String? = null
     ): CharacterResponse
 

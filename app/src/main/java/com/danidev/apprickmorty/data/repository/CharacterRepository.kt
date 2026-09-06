@@ -7,9 +7,9 @@ class CharacterRepository {
 
     private val api = RetrofitClient.api
 
-    suspend fun getCharacters(): Result<List<RickCharacter>>{
+    suspend fun getCharacters(name: String?=null): Result<List<RickCharacter>>{
         return  try {
-            val response = api.getCharacters(name: String? = null):
+            val response = api.getCharacters(name= name)
             Result.success(response.results)
         } catch (e: Exception){
             Result.failure(e)
