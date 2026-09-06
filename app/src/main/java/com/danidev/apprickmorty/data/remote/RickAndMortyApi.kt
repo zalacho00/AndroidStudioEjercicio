@@ -2,6 +2,11 @@ package com.danidev.apprickmorty.data.remote
 
 import com.danidev.apprickmorty.data.model.CharacterResponse
 import com.danidev.apprickmorty.data.model.RickCharacter
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.http.Path
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 interface RickAndMortyApi {
     @GET("character")
