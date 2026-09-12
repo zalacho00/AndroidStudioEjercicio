@@ -1,8 +1,10 @@
 package com.danidev.apprickmorty.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,8 +51,39 @@ fun ComposableCharacterScreen(
             value = searchQuery,
             onValueChange = { viewModel.onSearchQueryChanged(it)},
             placeholder = { Text("Buscar un personaje")},
-            leadingIcon = {Icon(Icons.Default.Search)}
+            leadingIcon = {Icon(Icons.Default.Search, contentDescription = "Buscar")},
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()){
+                    IconButton(onClick = {viewModel.onSearchQueryChanged("")}){
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Limpiar")
+                    }
+                }
+            },
+            singleLine = true,
+            shpe = RoundedCornerShape(size = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         )
+
+
+
+
+        Box(modifier = Modifier.fillMaxSize()){
+            when( val state = uiState){
+                is CharacterUiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                is CharacterUiState.Success -> {
+                    LazyVerticalGrid(
+                        colums = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spaceBy(12.dp)
+                    ){}
+                }
+            }
+        }
     }
 
 }
