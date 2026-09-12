@@ -80,7 +80,16 @@ fun ComposableCharacterScreen(
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spaceBy(12.dp)
-                    ){}
+                    ){
+                        items(
+                            items = state.characters,
+                            Key = {item: RickCharacter -> item.id}
+                        ){
+                            characterItem: RickCharacter ->
+                            CharacterCard(character = characterItem),
+                                onClick = {onCharacterClick(characterItem.id)}
+                        }
+                    }
                 }
             }
         }
