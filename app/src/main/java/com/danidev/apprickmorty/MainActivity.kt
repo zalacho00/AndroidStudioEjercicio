@@ -3,45 +3,54 @@ package com.danidev.apprickmorty
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.danidev.apprickmorty.data.model.Origin
+import com.danidev.apprickmorty.data.model.RickCharacter
+import com.danidev.apprickmorty.ui.navigation.AppNavigation
 import com.danidev.apprickmorty.ui.theme.ApprickmortyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val sampleCharacters = listOf(
+            RickCharacter(
+                id = 1,
+                name = "Rick Sanchez",
+                image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+                species = "Humano",
+                status = "Vivo",
+                origin = Origin("Tierra (C-137)")
+            ),
+            RickCharacter(
+                id = 2,
+                name = "Morty Smith",
+                image = "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
+                species = "Humano",
+                status = "Vivo",
+                origin = Origin("Tierra (C-137)")
+            ),
+            RickCharacter(
+                id = 3,
+                name = "Summer Smith",
+                image = "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+                species = "Humano",
+                status = "Vivo",
+                origin = Origin("Tierra (C-137)")
+            ),
+            RickCharacter(
+                id = 4,
+                name = "Jerry Smith",
+                image = "https://rickandmortyapi.com/api/character/avatar/5.jpeg",
+                species = "Humano",
+                status = "Vivo",
+                origin = Origin("Tierra (C-137)")
+            )
+        )
+
         setContent {
             ApprickmortyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavigation(characters = sampleCharacters)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ApprickmortyTheme {
-        Greeting("Android")
     }
 }
