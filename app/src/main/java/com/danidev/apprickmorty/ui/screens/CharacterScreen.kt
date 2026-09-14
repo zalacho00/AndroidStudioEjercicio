@@ -1,3 +1,4 @@
+/*
 package com.danidev.apprickmorty.ui.screens
 
 import androidx.compose.foundation.background
@@ -148,3 +149,4 @@ fun ComposableCharacterScreen(
             }
         }
     }
+*/

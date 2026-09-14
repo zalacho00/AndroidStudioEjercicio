@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.danidev.apprickmorty.data.model.RickCharacter
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.danidev.apprickmorty.R
 
 // Paleta de colores exacta de Figma
 val PortalGreen = Color(0xFF55B354)
@@ -36,33 +39,23 @@ val CardBorderGreen = Color(0xFF4CAF50)
 @Composable
 fun SplashAppScreen(onStartClick: () -> Unit = {}) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkBackground)
+        modifier = Modifier.fillMaxSize()
     ) {
-        Column(
+        // Imagen de fondo ocupando toda la pantalla
+        Image(
+            painter = painterResource(id = R.drawable.splash_background),
+            contentDescription = "Fondo Splash Rick y Morty",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Botón posicionado en la parte inferior
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Rick and Morty",
-                    color = Color.Cyan,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Las Tarjetas Perdidas",
-                    color = Color.White,
-                    fontSize = 18.sp
-                )
-            }
-
             Button(
                 onClick = onStartClick,
                 colors = ButtonDefaults.buttonColors(containerColor = PortalGreen),
@@ -71,7 +64,11 @@ fun SplashAppScreen(onStartClick: () -> Unit = {}) {
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text(text = "Iniciar Aplicación", color = Color.White, fontSize = 16.sp)
+                Text(
+                    text = "Iniciar Aplicación",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
             }
         }
     }
