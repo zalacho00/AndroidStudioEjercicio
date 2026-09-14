@@ -10,6 +10,7 @@ import com.danidev.apprickmorty.data.model.Origin
 import com.danidev.apprickmorty.data.model.RickCharacter
 import com.danidev.apprickmorty.ui.screens.CardDetailScreen
 import com.danidev.apprickmorty.ui.screens.HomeScreen
+import com.danidev.apprickmorty.ui.screens.PacksScreen
 import com.danidev.apprickmorty.ui.screens.SplashAppScreen
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets
 sealed class Screen(val route: String) {
     object Splash : Screen("splash_screen")
     object Home : Screen("home_screen")
+    object Packs : Screen("packs_screen")
     object Detail : Screen("detail_screen/{characterName}/{characterImage}/{characterSpecies}/{characterStatus}") {
         fun createRoute(character: RickCharacter): String {
             val encodedImage = URLEncoder.encode(character.image, StandardCharsets.UTF_8.toString())
@@ -51,11 +53,42 @@ fun AppNavigation(characters: List<RickCharacter>) {
                 characters = characters,
                 onCharacterClick = { character ->
                     navController.navigate(Screen.Detail.createRoute(character))
+                },
+                onNavigateToCartas = {
+                    navController.navigate(Screen.Packs.route) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
 
-        // 3. Detail Screen
+        // 3. Packs Screen (Pantalla de Sobres)
+        composable(Screen.Packs.route) {
+            PacksScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                onNavigateToCartas = {
+                    // Ya estás en esta pantalla
+                }
+            )
+        }
+
+        composable(Screen.Packs.route) {
+            PacksScreen(
+                characters = characters, // Le pasamos la lista de personajes
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                onNavigateToCartas = { }
+            )
+        }
+
+        // 4. Detail Screen
         composable(
             route = Screen.Detail.route,
             arguments = listOf(

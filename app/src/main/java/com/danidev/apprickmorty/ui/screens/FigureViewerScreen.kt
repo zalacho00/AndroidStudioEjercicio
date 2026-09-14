@@ -78,12 +78,18 @@ fun SplashAppScreen(onStartClick: () -> Unit = {}) {
 @Composable
 fun HomeScreen(
     characters: List<RickCharacter> = emptyList(),
-    onCharacterClick: (RickCharacter) -> Unit = {}
+    onCharacterClick: (RickCharacter) -> Unit = {},
+    onNavigateToCartas: () -> Unit = {}
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
+        bottomBar = { 
+            BottomNavigationBar(
+                onHomeClick = {}, // Ya estamos en Home
+                onCartasClick = onNavigateToCartas
+            ) 
+        },
         containerColor = DarkBackground
     ) { paddingValues ->
         Column(
@@ -187,7 +193,7 @@ fun CardDetailScreen(character: RickCharacter) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .background(color = DarkBackground)
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -203,14 +209,14 @@ fun CardDetailScreen(character: RickCharacter) {
 
                     Text(
                         text = character.name,
-                        color = Color.Black,
+                        color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
                         text = "Especie: ${character.species}",
-                        color = Color.Gray,
+                        color = Color.White,
                         fontSize = 12.sp
                     )
 
@@ -237,21 +243,27 @@ fun CardDetailScreen(character: RickCharacter) {
     }
 }
 
+
+
 // BARRA DE NAVEGACIÓN INFERIOR
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(
+    onHomeClick: () -> Unit = {},
+    onCartasClick: () -> Unit = {}
+) {
     NavigationBar(containerColor = Color.White) {
         NavigationBarItem(
             selected = true,
-            onClick = {},
+            onClick = onHomeClick,
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") }
         )
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = onCartasClick,
             icon = { Icon(Icons.Default.Style, contentDescription = "Cartas") },
             label = { Text("Cartas") }
         )
     }
 }
+
