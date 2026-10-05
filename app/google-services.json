@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719685268548",
+    "project_id": "rickmorty-api-app-uni",
+    "storage_bucket": "rickmorty-api-app-uni.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719685268548:android:7d9003f8791ee777f5b811",
+        "android_client_info": {
+          "package_name": "com.danidev.apprickmorty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEEMnBIanYzZaFXnlJJuQAiWpSRcaLexI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.danidev.apprickmorty.data.model.RickCharacter
 import androidx.compose.foundation.Image
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.res.painterResource
 import com.danidev.apprickmorty.R
 
@@ -79,7 +80,8 @@ fun SplashAppScreen(onStartClick: () -> Unit = {}) {
 fun HomeScreen(
     characters: List<RickCharacter> = emptyList(),
     onCharacterClick: (RickCharacter) -> Unit = {},
-    onNavigateToCartas: () -> Unit = {}
+    onNavigateToCartas: () -> Unit = {},
+    onNavigateToPerfil: () -> Unit = {}
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
@@ -87,7 +89,8 @@ fun HomeScreen(
         bottomBar = { 
             BottomNavigationBar(
                 onHomeClick = {}, // Ya estamos en Home
-                onCartasClick = onNavigateToCartas
+                onCartasClick = onNavigateToCartas,
+                        onPerfilClick = onNavigateToPerfil
             ) 
         },
         containerColor = DarkBackground
@@ -249,7 +252,8 @@ fun CardDetailScreen(character: RickCharacter) {
 @Composable
 fun BottomNavigationBar(
     onHomeClick: () -> Unit = {},
-    onCartasClick: () -> Unit = {}
+    onCartasClick: () -> Unit = {},
+    onPerfilClick: () -> Unit = {}
 ) {
     NavigationBar(containerColor = Color.White) {
         NavigationBarItem(
@@ -263,6 +267,12 @@ fun BottomNavigationBar(
             onClick = onCartasClick,
             icon = { Icon(Icons.Default.Style, contentDescription = "Cartas") },
             label = { Text("Cartas") }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = onPerfilClick,
+            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+            label = { Text("Perfil") }
         )
     }
 }
