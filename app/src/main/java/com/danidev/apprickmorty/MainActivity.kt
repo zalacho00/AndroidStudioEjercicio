@@ -39,11 +39,43 @@ class MainActivity : ComponentActivity() {
             ),
             RickCharacter(
                 id = 4,
+                name = "Beth Smith",
+                image = "https://rickandmortyapi.com/api/character/avatar/4.jpeg",
+                species = "Humano",
+                status = "Vivo",
+                origin = Origin("Tierra (C-137)")
+            ),
+            RickCharacter(
+                id = 5,
                 name = "Jerry Smith",
                 image = "https://rickandmortyapi.com/api/character/avatar/5.jpeg",
                 species = "Humano",
                 status = "Vivo",
                 origin = Origin("Tierra (C-137)")
+            ),
+            RickCharacter(
+                id = 6,
+                name = "Abadango Cluster Princess",
+                image = "https://rickandmortyapi.com/api/character/avatar/6.jpeg",
+                species = "Alien",
+                status = "Vivo",
+                origin = Origin("Abadango")
+            ),
+            RickCharacter(
+                id = 7,
+                name = "Abradolf Lincler",
+                image = "https://rickandmortyapi.com/api/character/avatar/7.jpeg",
+                species = "Humanoide",
+                status = "Desconocido",
+                origin = Origin("Tierra (Dimensión de Reemplazo)")
+            ),
+            RickCharacter(
+                id = 8,
+                name = "Birdperson",
+                image = "https://rickandmortyapi.com/api/character/avatar/11.jpeg",
+                species = "Bird-Person",
+                status = "Vivo",
+                origin = Origin("Bird World")
             )
         )
 

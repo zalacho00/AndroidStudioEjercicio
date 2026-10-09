@@ -21,7 +21,7 @@ interface RickAndMortyApi {
 }
 
 object RetrofitClient {
-    private const val  BASE_URL = "https://rickandmortyapi.com/api"
+    private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
     val api: RickAndMortyApi by lazy {
         Retrofit.Builder()

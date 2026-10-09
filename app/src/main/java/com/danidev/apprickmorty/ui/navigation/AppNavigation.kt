@@ -1,6 +1,7 @@
 package com.danidev.apprickmorty.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,6 +17,7 @@ import com.danidev.apprickmorty.ui.screens.LoginScreen
 import com.danidev.apprickmorty.ui.screens.PacksScreen
 import com.danidev.apprickmorty.ui.screens.ProfileScreen
 import com.danidev.apprickmorty.ui.screens.SplashAppScreen
+import com.danidev.apprickmorty.ui.viewModel.CharacterViewModel
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -28,8 +30,11 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile_screen")
     object Detail : Screen("detail_screen/{characterName}/{characterImage}/{characterSpecies}/{characterStatus}") {
         fun createRoute(character: RickCharacter): String {
+            val encodedName = URLEncoder.encode(character.name, StandardCharsets.UTF_8.toString())
             val encodedImage = URLEncoder.encode(character.image, StandardCharsets.UTF_8.toString())
-            return "detail_screen/${character.name}/$encodedImage/${character.species}/${character.status}"
+            val encodedSpecies = URLEncoder.encode(character.species, StandardCharsets.UTF_8.toString())
+            val encodedStatus = URLEncoder.encode(character.status, StandardCharsets.UTF_8.toString())
+            return "detail_screen/$encodedName/$encodedImage/$encodedSpecies/$encodedStatus"
         }
     }
 }
@@ -38,6 +43,17 @@ sealed class Screen(val route: String) {
 fun AppNavigation(characters: List<RickCharacter>) {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
+    val characterViewModel: CharacterViewModel = viewModel()
+
+    LaunchedEffect(characters) {
+        characterViewModel.initCharacters(characters)
+    }
+
+    val currentCharacters = if (characterViewModel.allCharacters.isNotEmpty()) {
+        characterViewModel.allCharacters
+    } else {
+        characters
+    }
 
     NavHost(
         navController = navController,
@@ -70,7 +86,7 @@ fun AppNavigation(characters: List<RickCharacter>) {
         // 3. Home
         composable(Screen.Home.route) {
             HomeScreen(
-                characters = characters,
+                characters = currentCharacters,
                 onCharacterClick = { character ->
                     navController.navigate(Screen.Detail.createRoute(character))
                 },
@@ -86,13 +102,16 @@ fun AppNavigation(characters: List<RickCharacter>) {
         // 4. Packs
         composable(Screen.Packs.route) {
             PacksScreen(
-                characters = characters,
+                characters = currentCharacters,
                 onNavigateToHome = {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
-                onNavigateToCartas = { }
+                onNavigateToCartas = { },
+                onNavigateToPerfil = {
+                    navController.navigate(Screen.Profile.route) { launchSingleTop = true }
+                }
             )
         }
 
@@ -120,11 +139,17 @@ fun AppNavigation(characters: List<RickCharacter>) {
                 navArgument("characterStatus") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("characterName") ?: "Rick Sanchez"
+            val rawName = backStackEntry.arguments?.getString("characterName") ?: "Rick Sanchez"
+            val name = try { URLDecoder.decode(rawName, StandardCharsets.UTF_8.toString()) } catch (e: Exception) { rawName }
+
             val rawImage = backStackEntry.arguments?.getString("characterImage") ?: ""
-            val image = URLDecoder.decode(rawImage, StandardCharsets.UTF_8.toString())
-            val species = backStackEntry.arguments?.getString("characterSpecies") ?: "Humano"
-            val status = backStackEntry.arguments?.getString("characterStatus") ?: "Vivo"
+            val image = try { URLDecoder.decode(rawImage, StandardCharsets.UTF_8.toString()) } catch (e: Exception) { rawImage }
+
+            val rawSpecies = backStackEntry.arguments?.getString("characterSpecies") ?: "Humano"
+            val species = try { URLDecoder.decode(rawSpecies, StandardCharsets.UTF_8.toString()) } catch (e: Exception) { rawSpecies }
+
+            val rawStatus = backStackEntry.arguments?.getString("characterStatus") ?: "Vivo"
+            val status = try { URLDecoder.decode(rawStatus, StandardCharsets.UTF_8.toString()) } catch (e: Exception) { rawStatus }
 
             CardDetailScreen(
                 character = RickCharacter(
@@ -134,7 +159,8 @@ fun AppNavigation(characters: List<RickCharacter>) {
                     species = species,
                     status = status,
                     origin = Origin("Tierra (C-137)")
-                )
+                ),
+                onBack = { navController.popBackStack() }
             )
         }
     }
