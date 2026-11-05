@@ -1,71 +1,134 @@
-# App rick y morty
+# Rick & Morty Cards — Las Tarjetas Perdidas
 
-## carpetas usadas
+Aplicación Android hecha con **Kotlin** y **Jetpack Compose** (Material 3) para explorar a los personajes
+de Rick and Morty y coleccionarlos abriendo sobres. Consume la [Rick and Morty API](https://rickandmortyapi.com/)
+y usa **Firebase** para el registro, el inicio de sesión y el perfil del usuario.
 
-<img width="437" height="645" alt="image" src="https://github.com/user-attachments/assets/66aff49b-ca6b-4819-a1b1-e9de4fbc4b60" />
-Esta es la estructura limpia para una aplicacion movil
-<br><br>
+## Capturas de pantalla
 
-### 1. Capa de Datos (`data`)
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/01-splash.jpg" width="200" alt="Pantalla de inicio"><br><sub><b>Inicio</b></sub></td>
+    <td align="center"><img src="docs/screenshots/02-login.jpg" width="200" alt="Inicio de sesión"><br><sub><b>Iniciar sesión</b></sub></td>
+    <td align="center"><img src="docs/screenshots/03-registro.jpg" width="200" alt="Registro de usuario"><br><sub><b>Registro</b></sub></td>
+    <td align="center"><img src="docs/screenshots/04-home.jpg" width="200" alt="Listado de personajes"><br><sub><b>Home: personajes</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/05-detalle.jpg" width="200" alt="Detalle del personaje"><br><sub><b>Detalle del personaje</b></sub></td>
+    <td align="center"><img src="docs/screenshots/06-sobres.jpg" width="200" alt="Pantalla de sobres"><br><sub><b>Sobres</b></sub></td>
+    <td align="center"><img src="docs/screenshots/07-nueva-carta.jpg" width="200" alt="Nueva carta obtenida"><br><sub><b>Nueva carta</b></sub></td>
+    <td align="center"><img src="docs/screenshots/08-perfil.jpg" width="200" alt="Perfil del explorador"><br><sub><b>Perfil</b></sub></td>
+  </tr>
+</table>
 
-Maneja la lógica de negocio, la obtención de datos y su transformación.
+## Funcionalidades
 
-<br>
+- **Pantalla de inicio (splash)** con arte de fondo y botón *Iniciar Exploración*. Si ya hay una sesión abierta
+  entra directo al Home; si no, va al login.
+- **Registro e inicio de sesión** con Firebase Authentication. Se puede entrar con **usuario o correo** y contraseña.
+  El registro valida el nombre de usuario (mínimo 3 caracteres, sin espacios ni `@`), el correo y la contraseña (mínimo 6 caracteres).
+- **Home**: cuadrícula de personajes obtenidos de la API, con buscador por **nombre, especie o estado**.
+  Si la API no responde, la app usa una lista local de personajes de respaldo.
+- **Detalle del personaje**: imagen, nombre, estado y especie.
+- **Sobres**: se empieza con 3 sobres; cada vez que se abre uno aparece un personaje aleatorio en un diálogo
+  con las opciones *Abrir Otro* y *Guardar*, y se lleva la cuenta de cartas abiertas.
+- **Perfil**: muestra usuario y correo, permite cambiar la foto desde la galería y cerrar sesión.
+- **Barra de navegación inferior** en *Home* y *Cartas*, con acceso a *Perfil*.
 
-1.1: `model` (`Character.kt`): Define las entidades o estructuras de datos que maneja la app.
-Es una clase Kotlin (generalmente un `data class`) que representa a un personaje con sus propiedades 
-(por ejemplo: id, name, status, image).
-<img width="366" height="469" alt="image" src="https://github.com/user-attachments/assets/777df7c4-58ce-49f2-a0e2-23370f4509df" />
+## Tecnologías
 
-<br>
+| Área | Herramienta |
+| --- | --- |
+| Lenguaje | Kotlin 2.2.10 |
+| UI | Jetpack Compose + Material 3 (Compose BOM 2026.02.01) |
+| Navegación | Navigation Compose 2.9.8 |
+| Estado | `ViewModel` + `mutableStateOf` (lifecycle-viewmodel-compose 2.11.0) |
+| Red | Retrofit 3.0.0 + conversor Gson |
+| Imágenes | Coil 2.7.0 |
+| Backend | Firebase Authentication + Cloud Firestore (Firebase BoM 34.0.0) |
+| Android | `minSdk` 24 · `targetSdk` 37 |
 
-1.2: `remote` (`RickAndMortyApi.kt`): Se encarga de la comunicación directa con el servidor/API externo.
-Aquí se definen las peticiones HTTP (normalmente usando librerías como `Retrofit`)
-para consumir los datos de la API de Rick and Morty.
-<img width="556" height="667" alt="image" src="https://github.com/user-attachments/assets/2e9d158e-2dae-4c06-b802-4e5be99eced7" />
+## Estructura del proyecto
 
-<br>
+```
+app/src/main/java/com/danidev/apprickmorty/
+├── MainActivity.kt                 # Punto de entrada: tema + AppNavigation
+├── data/
+│   ├── model/
+│   │   └── Character.kt            # RickCharacter, Origin, CharacterResponse
+│   ├── remote/
+│   │   └── RickAndMortyApi.kt      # Interfaz Retrofit y RetrofitClient
+│   └── repository/
+│       └── CharacterRepository.kt  # Acceso a la API, devuelve Result<List<RickCharacter>>
+└── ui/
+    ├── Auth/
+    │   └── AuthViewModel.kt        # Login, registro, perfil y foto con Firebase
+    ├── navigation/
+    │   └── AppNavigation.kt        # Rutas y NavHost
+    ├── screens/
+    │   ├── FigureViewerScreen.kt   # Splash, Home, detalle y barra de navegación inferior
+    │   ├── LoginScreen.kt          # Login y registro
+    │   ├── PacksScreen.kt          # Apertura de sobres
+    │   └── ProfileScreen.kt        # Perfil del usuario
+    ├── theme/
+    │   ├── Color.kt                # Paleta de colores
+    │   ├── Theme.kt                # Tema Material 3
+    │   └── Type.kt                 # Tipografías
+    └── viewModel/
+        └── CharacterViewModel.kt   # Lista, filtro de búsqueda y sobres
+```
 
-1.3: `repository` (`CharacterRepository.kt`): Actúa como intermediario y única fuente de verdad para el resto de la app.
-Pide los datos a `remote` (o a una base de datos local si la hubiera), procesa la respuesta y se la entrega a la interfaz.
-Aisla a la `UI` de los detalles de implementación de la red.
-<img width="649" height="434" alt="image" src="https://github.com/user-attachments/assets/c323953a-1ac1-4e93-bfdc-ec0103bceba7" />
+### Capa de datos (`data`)
 
+Obtiene y transforma la información.
 
-<br><br>
-### 2. Capa de Interfaz (`ui`)
-Maneja todo lo que el usuario ve y escucha en la pantalla.
-<br>
+- **`model`** (`Character.kt`): clases de datos que representan la respuesta de la API (`RickCharacter` con id, nombre,
+  estado, especie, imagen y origen).
+- **`remote`** (`RickAndMortyApi.kt`): interfaz de Retrofit con los endpoints `character` y `character/{id}` sobre
+  `https://rickandmortyapi.com/api/`.
+- **`repository`** (`CharacterRepository.kt`): intermediario entre la API y la interfaz. Envuelve la llamada en un
+  `Result` para que la UI maneje el éxito o el error sin conocer los detalles de la red.
 
-`ui`: Paquete raíz de la interfaz visual.
-<br>
+### Capa de interfaz (`ui`)
 
-2.1: `screens` (`CharacterScreen.kt`): Contiene los componentes de vista (usualmente composables de Jetpack Compose)
-que arman la pantalla completa donde se muestran los personajes y se gestiona la interacción del usuario.
-<br>
+Todo lo que el usuario ve e interactúa.
 
-2.2: `theme` (`Color.kt`, `Theme.kt`,` Type.kt`): Configura la identidad visual global de la app.
-<br>
+- **`Auth`**: `AuthViewModel` gestiona sesión, registro, datos del perfil y foto.
+- **`navigation`**: define las rutas (`splash`, `login`, `home`, `packs`, `profile`, `detail`) y el `NavHost`.
+- **`screens`**: pantallas hechas con composables de Jetpack Compose.
+- **`theme`**: identidad visual de la app (colores, tipografía y tema oscuro de Material 3).
+- **`viewModel`**: `CharacterViewModel` carga los personajes, aplica el filtro del buscador y controla los sobres.
 
-- `Color.kt`: Define la paleta de colores.
+## Flujo de navegación
 
-- `Type.kt`: Define los estilos tipográficos (fuentes, tamaños, pesos).
+1. **Splash** → **Login / Registro** (o directo a **Home** si ya hay sesión).
+2. **Home** ⇄ **Cartas**, ambas con la barra inferior; desde cualquiera de las dos se entra a **Perfil**.
+3. Desde **Home**, tocar un personaje abre su **Detalle**; la flecha de volver regresa al Home.
+4. En **Perfil**, *Cerrar sesión* vuelve al **Login**.
 
-- `Theme.kt`: Une los colores, tipografías y formas para aplicar un tema unificado (modo claro/oscuro) a todos los componentes visuales.
+## Datos en Firebase
 
+- **Authentication**: proveedor *Correo y contraseña*.
+- **Firestore**: colección `usuarios`, un documento por usuario (id = `uid`) con los campos
+  `username`, `usernameLower`, `email` y `photoBase64` (foto de perfil reducida a 256 px y guardada en Base64).
 
+## Cómo ejecutarlo
 
-## Aplicacion Rick Morty
+1. Clona el repositorio y ábrelo con **Android Studio**.
+2. Crea un proyecto en [Firebase](https://console.firebase.google.com/) y registra una app Android con el
+   paquete `com.danidev.apprickmorty`.
+3. Descarga tu `google-services.json` y colócalo en `app/`.
+4. En Firebase activa **Authentication → Correo y contraseña** y crea una base de datos **Firestore**.
+   El login por nombre de usuario consulta la colección `usuarios` por el campo `usernameLower`, así que las
+   reglas de Firestore deben permitir esa lectura.
+5. Sincroniza Gradle y ejecuta la app en un emulador o dispositivo con Android 7.0 (API 24) o superior.
+   Necesita conexión a internet.
 
-<img width="572" height="1280" alt="fondeSplash" src="https://github.com/user-attachments/assets/ab439d0d-38b4-4183-bdb0-ed024c2ee2b2" />
-<br>
-<img width="310" height="697" alt="Captura de pantalla 2026-09-11 201933" src="https://github.com/user-attachments/assets/fd5bd273-023c-4dbf-882f-2a150f7297a5" />
-<br>
-<img width="720" height="1610" alt="WhatsApp Image 2026-09-14 at 6 33 56 PM" src="https://github.com/user-attachments/assets/5ef0265c-27c8-4c36-a19a-e58eb4393c7d" />
-<br>
-<img width="572" height="1280" alt="sobres" src="https://github.com/user-attachments/assets/13791a53-7dba-4a94-b003-c225de40b634" />
-<br>
-<img width="572" height="1280" alt="cartaSobre" src="https://github.com/user-attachments/assets/c32304be-afd7-4ea4-b034-631118dab14a" />
+## Créditos
 
+Datos e imágenes de personajes: [The Rick and Morty API](https://rickandmortyapi.com/).
+Rick and Morty es propiedad de Adult Swim; este proyecto es un ejercicio educativo sin fines de lucro.
 
+---
 
+El README fue hecho con ayuda de Claude!
